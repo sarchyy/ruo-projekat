@@ -86,10 +86,10 @@ resource "local_file" "inventory" {
   file_permission      = "0644"
   directory_permission = "0755"
   content              = <<-EOT
-    [app]
+    [app_servers]
     app ansible_host=${libvirt_domain.vm["app"].network_interface[0].addresses[0]} ansible_user=student
 
-    [dns]
+    [dns_servers]
     dns ansible_host=${libvirt_domain.vm["dns"].network_interface[0].addresses[0]} ansible_user=student
   EOT
 }
