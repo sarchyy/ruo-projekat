@@ -1,0 +1,3 @@
+# Primjer. Prava datoteka (vault.yml) se pravi skriptom vault-init.sh,
+# šifruje se ansible-vault-om i NIJE u Gitu.
+vault_db_password: "primjer-lozinka"

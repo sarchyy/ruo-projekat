@@ -1,0 +1,3 @@
+db_name: ruo
+db_user: ruo
+db_password: "{{ vault_db_password }}"
