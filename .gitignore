@@ -1,0 +1,11 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+tfplan
+*.tfvars
+.env
+.vault_pass
+vault.yml
+*.pem
+id_*
+__pycache__/
