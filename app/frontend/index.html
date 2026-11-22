@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="bs">
+<head>
+  <meta charset="utf-8">
+  <title>RuO projekat</title>
+</head>
+<body>
+  <h1>RuO projekat: troslojna aplikacija</h1>
+  <p id="brojac">Učitavam...</p>
+  <script>
+    fetch("/api/posjete")
+      .then(r => r.json())
+      .then(d => { document.getElementById("brojac").textContent = "Broj posjeta: " + d.posjete; })
+      .catch(() => { document.getElementById("brojac").textContent = "Greška: backend nije dostupan"; });
+  </script>
+</body>
+</html>
