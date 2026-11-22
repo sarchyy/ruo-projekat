@@ -4,6 +4,10 @@ terraform {
       source  = "dmacvicar/libvirt"
       version = "~> 0.8.3"
     }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.5"
+    }
   }
 }
 
@@ -75,4 +79,17 @@ resource "libvirt_domain" "vm" {
 # adrese obje mašine: { app = "...", dns = "..." }
 output "ip" {
   value = { for ime, vm in libvirt_domain.vm : ime => vm.network_interface[0].addresses[0] }
+}
+
+resource "local_file" "inventory" {
+  filename             = "${path.module}/../../ansible/inventory.ini"
+  file_permission      = "0644"
+  directory_permission = "0755"
+  content              = <<-EOT
+    [app]
+    app ansible_host=${libvirt_domain.vm["app"].network_interface[0].addresses[0]} ansible_user=student
+
+    [dns]
+    dns ansible_host=${libvirt_domain.vm["dns"].network_interface[0].addresses[0]} ansible_user=student
+  EOT
 }

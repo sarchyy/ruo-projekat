@@ -9,3 +9,4 @@ vault.yml
 *.pem
 id_*
 __pycache__/
+ansible/inventory.ini
