@@ -1,0 +1,114 @@
+tests/app.sh
+== app: aplikacija i kontejneri
+  [OK]   početna stranica odgovara na portu 80
+  [OK]   brojač posjeta raste (5 -> 6)
+  [OK]   sva tri kontejnera su zdrava (healthy)
+  [OK]   objavljen je samo jedan port: 80 na frontendu
+  ---- prošlo: 4, palo: 0
+tests/izolacija.sh
+== izolacija: segmentacija mreže
+  [OK]   frontend je u mrežama: ruo_app ruo_web
+  [OK]   backend je u mrežama: ruo_app ruo_db
+  [OK]   db je u mrežama: ruo_db
+  [OK]   frontend vidi backend po imenu
+  [OK]   frontend NE vidi bazu po imenu
+  [OK]   backend dohvata bazu (db:5432)
+  [OK]   backend NE izlazi na internet (1.1.1.1:53)
+  [OK]   izvana je otvoren port 80 (frontend)
+  [OK]   izvana NIJE otvoren port 8000 (backend)
+  [OK]   izvana NIJE otvoren port 5432 (baza)
+  ---- prošlo: 10, palo: 0
+tests/dns.sh
+== dns: zona projekat.lab
+  [OK]   BIND je autoritativan za zonu (zastavica aa)
+  [OK]   ns1.projekat.lab pokazuje na adresu dns VM-a
+  [OK]   app.projekat.lab pokazuje na adresu app VM-a
+  [OK]   web.projekat.lab je nadimak (CNAME) za app.projekat.lab.
+  [OK]   tuđe domene se odbijaju (recursion no)
+  [OK]   izmjena zone bez TSIG potpisa je odbijena
+  [OK]   zapis 'proba' nije nastao
+  [OK]   Terraform plan: nema razlike između koda i DNS-a (exit 0)
+  ---- prošlo: 8, palo: 0
+tests/trajnost.sh
+== trajnost: brisanje kontejnera baze
+  [OK]   imenovani volumen ruo_dbdata postoji
+  brojač prije brisanja kontejnera baze: 7
+  kontejner baze je obrisan, pravim novi (isti volumen)
+  brojač poslije: 8
+  [OK]   podaci su preživjeli novi kontejner baze (7 -> 8)
+  ---- prošlo: 2, palo: 0
+tests/drift.sh
+== drift: ručna izmjena DNS-a
+  [OK]   prije izmjene nema drifta (plan exit 0)
+  ... neko ručno mijenja app.projekat.lab na 10.40.2.99 (nsupdate, mimo Terraforma)
+  [OK]   ručna izmjena je stvarno upisana u DNS
+  --- terraform plan (očekujemo razliku):
+      data.terraform_remote_state.vm: Reading...
+      data.terraform_remote_state.vm: Read complete after 0s
+      dns_txt_record_set.vlasnik: Refreshing state... [id=projekat.lab.]
+      dns_cname_record.web: Refreshing state... [id=web.projekat.lab.]
+      dns_a_record_set.app: Refreshing state... [id=app.projekat.lab.]
+      
+      Terraform used the selected providers to generate the following execution
+      plan. Resource actions are indicated with the following symbols:
+        ~ update in-place
+      
+      Terraform will perform the following actions:
+      
+        # dns_a_record_set.app will be updated in-place
+        ~ resource "dns_a_record_set" "app" {
+            ~ addresses = [
+                - "10.40.2.99",
+                + "192.168.122.8",
+              ]
+              id        = "app.projekat.lab."
+              name      = "app"
+              # (2 unchanged attributes hidden)
+          }
+      
+      Plan: 0 to add, 1 to change, 0 to destroy.
+      
+      ─────────────────────────────────────────────────────────────────────────────
+      
+      Note: You didn't use the -out option to save this plan, so Terraform can't
+      guarantee to take exactly these actions if you run "terraform apply" now.
+  [OK]   plan je primijetio drift (exit 2)
+  --- terraform apply (vraća stanje iz koda):
+      data.terraform_remote_state.vm: Reading...
+      data.terraform_remote_state.vm: Read complete after 0s
+      dns_txt_record_set.vlasnik: Refreshing state... [id=projekat.lab.]
+      dns_cname_record.web: Refreshing state... [id=web.projekat.lab.]
+      dns_a_record_set.app: Refreshing state... [id=app.projekat.lab.]
+      
+      Terraform used the selected providers to generate the following execution
+      plan. Resource actions are indicated with the following symbols:
+        ~ update in-place
+      
+      Terraform will perform the following actions:
+      
+        # dns_a_record_set.app will be updated in-place
+        ~ resource "dns_a_record_set" "app" {
+            ~ addresses = [
+                - "10.40.2.99",
+                + "192.168.122.8",
+              ]
+              id        = "app.projekat.lab."
+              name      = "app"
+              # (2 unchanged attributes hidden)
+          }
+      
+      Plan: 0 to add, 1 to change, 0 to destroy.
+      dns_a_record_set.app: Modifying... [id=app.projekat.lab.]
+      dns_a_record_set.app: Modifications complete after 0s [id=app.projekat.lab.]
+      
+      Apply complete! Resources: 0 added, 1 changed, 0 destroyed.
+      
+      Outputs:
+      
+      imena = [
+        "app.projekat.lab.",
+        "web.projekat.lab.",
+      ]
+  [OK]   app.projekat.lab ponovo pokazuje na adresu app VM-a
+  [OK]   poslije popravke nema drifta (plan exit 0)
+  ---- prošlo: 5, palo: 0

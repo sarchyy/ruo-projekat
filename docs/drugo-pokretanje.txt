@@ -1,0 +1,76 @@
+cd ansible && ./vault-init.sh && ansible-playbook site.yml
+
+PLAY [Poravnanje sata] *********************************************************
+
+TASK [čekaj da SSH postane dostupan] *******************************************
+ok: [app]
+ok: [dns]
+
+TASK [sat VM-a je postavljen na vrijeme mašine koja pokreće Ansible] ***********
+ok: [dns]
+ok: [app]
+
+PLAY [Priprema svih mašina] ****************************************************
+
+TASK [čekaj da SSH postane dostupan] *******************************************
+ok: [dns]
+ok: [app]
+
+TASK [čekaj da cloud-init završi] **********************************************
+ok: [app]
+ok: [dns]
+
+TASK [prikupi činjenice o mašini] **********************************************
+ok: [dns]
+ok: [app]
+
+PLAY [Aplikacijska VM] *********************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [app]
+
+TASK [docker : Docker i Compose su instalirani] ********************************
+ok: [app]
+
+TASK [docker : Docker servis radi i pokreće se pri paljenju] *******************
+ok: [app]
+
+TASK [docker : korisnik student smije koristiti Docker] ************************
+ok: [app]
+
+TASK [app : direktorij aplikacije postoji] *************************************
+ok: [app]
+
+TASK [app : kod aplikacije je kopiran na VM] ***********************************
+ok: [app]
+
+TASK [app : .env s tajnama (samo root može čitati)] ****************************
+ok: [app]
+
+TASK [app : aplikacija je izgrađena i pokrenuta] *******************************
+ok: [app]
+
+PLAY [DNS server] **************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [dns]
+
+TASK [dns : BIND i alati su instalirani] ***************************************
+ok: [dns]
+
+TASK [dns : Opcije servera (samo autoritativni, bez rekurzije)] ****************
+ok: [dns]
+
+TASK [dns : Zona i TSIG ključ (fajl sadrži tajnu pa je 0640)] ******************
+ok: [dns]
+
+TASK [dns : Početni zonski fajl (pravi se samo ako ne postoji, poslije ga vodi BIND)] ***
+ok: [dns]
+
+TASK [dns : BIND radi i pokreće se pri paljenju VM-a] **************************
+ok: [dns]
+
+PLAY RECAP *********************************************************************
+app                        : ok=13   changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+dns                        : ok=11   changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
