@@ -1,0 +1,14 @@
+# Sat VM-a mora biti tačan: TSIG potpis (DNS) i apt provjeravaju vrijeme.
+# Poslije pauze laptopa ili WSL-a VM-ovi kasne, pa ga prije svega poravnamo s mašinom koja pokreće Ansible.
+- name: Poravnanje sata
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: čekaj da SSH postane dostupan
+      ansible.builtin.wait_for_connection:
+        timeout: 300
+
+    - name: sat VM-a je postavljen na vrijeme mašine koja pokreće Ansible
+      ansible.builtin.command: "date -u -s @{{ lookup('pipe', 'date +%s') }}"
+      changed_when: false
