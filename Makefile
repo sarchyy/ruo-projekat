@@ -3,14 +3,15 @@
 .RECIPEPREFIX = >
 SHELL := /bin/bash
 .SHELLFLAGS := -eu -o pipefail -c
-.PHONY: help check infra config dns all destroy clean
+.PHONY: help check infra config dns test all destroy clean
 
 help:
 > @echo "make check    - provjeri da su svi alati tu"
 > @echo "make infra    - Terraform: napravi dvije VM (app, dns)"
 > @echo "make config   - Ansible: Docker, aplikacija, BIND"
 > @echo "make dns      - Terraform: zapisi u DNS zoni"
-> @echo "make all      - sve redom (check, infra, config, dns)"
+> @echo "make test     - testovi: aplikacija, izolacija, DNS, drift, trajnost"
+> @echo "make all      - sve redom (check, infra, config, dns, test)"
 > @echo "make destroy  - sruši VM-ove (vault ostaje)"
 > @echo "make clean    - sruši sve i obriši tajne (prava gradnja od nule)"
 
@@ -34,7 +35,7 @@ dns:
 > terraform -chdir=terraform/dns init -input=false
 > S=$$(ansible/tsig-secret.sh) && TF_VAR_tsig_secret="$$S" terraform -chdir=terraform/dns apply -auto-approve
 
-all: check infra config dns
+all: check infra config dns test
 
 destroy:
 > rm -f terraform/dns/terraform.tfstate terraform/dns/terraform.tfstate.backup
@@ -42,3 +43,10 @@ destroy:
 
 clean: destroy
 > rm -f ansible/.vault_pass ansible/group_vars/all/vault.yml ansible/group_vars/dns_servers/vault.yml ansible/inventory.ini
+
+test:
+> tests/app.sh
+> tests/izolacija.sh
+> tests/dns.sh
+> tests/trajnost.sh
+> tests/drift.sh
