@@ -1,7 +1,7 @@
 tests/app.sh
 == app: aplikacija i kontejneri
   [OK]   početna stranica odgovara na portu 80
-  [OK]   brojač posjeta raste (5 -> 6)
+  [OK]   brojač posjeta raste (17 -> 18)
   [OK]   sva tri kontejnera su zdrava (healthy)
   [OK]   objavljen je samo jedan port: 80 na frontendu
   ---- prošlo: 4, palo: 0
@@ -32,10 +32,10 @@ tests/dns.sh
 tests/trajnost.sh
 == trajnost: brisanje kontejnera baze
   [OK]   imenovani volumen ruo_dbdata postoji
-  brojač prije brisanja kontejnera baze: 7
+  brojač prije brisanja kontejnera baze: 19
   kontejner baze je obrisan, pravim novi (isti volumen)
-  brojač poslije: 8
-  [OK]   podaci su preživjeli novi kontejner baze (7 -> 8)
+  brojač poslije: 20
+  [OK]   podaci su preživjeli novi kontejner baze (19 -> 20)
   ---- prošlo: 2, palo: 0
 tests/drift.sh
 == drift: ručna izmjena DNS-a
@@ -45,9 +45,9 @@ tests/drift.sh
   --- terraform plan (očekujemo razliku):
       data.terraform_remote_state.vm: Reading...
       data.terraform_remote_state.vm: Read complete after 0s
-      dns_txt_record_set.vlasnik: Refreshing state... [id=projekat.lab.]
-      dns_cname_record.web: Refreshing state... [id=web.projekat.lab.]
       dns_a_record_set.app: Refreshing state... [id=app.projekat.lab.]
+      dns_cname_record.web: Refreshing state... [id=web.projekat.lab.]
+      dns_txt_record_set.vlasnik: Refreshing state... [id=projekat.lab.]
       
       Terraform used the selected providers to generate the following execution
       plan. Resource actions are indicated with the following symbols:
@@ -76,9 +76,9 @@ tests/drift.sh
   --- terraform apply (vraća stanje iz koda):
       data.terraform_remote_state.vm: Reading...
       data.terraform_remote_state.vm: Read complete after 0s
-      dns_txt_record_set.vlasnik: Refreshing state... [id=projekat.lab.]
       dns_cname_record.web: Refreshing state... [id=web.projekat.lab.]
       dns_a_record_set.app: Refreshing state... [id=app.projekat.lab.]
+      dns_txt_record_set.vlasnik: Refreshing state... [id=projekat.lab.]
       
       Terraform used the selected providers to generate the following execution
       plan. Resource actions are indicated with the following symbols:

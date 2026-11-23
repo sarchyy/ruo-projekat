@@ -3,8 +3,8 @@ cd ansible && ./vault-init.sh && ansible-playbook site.yml
 PLAY [Poravnanje sata] *********************************************************
 
 TASK [čekaj da SSH postane dostupan] *******************************************
-ok: [app]
 ok: [dns]
+ok: [app]
 
 TASK [sat VM-a je postavljen na vrijeme mašine koja pokreće Ansible] ***********
 ok: [dns]
@@ -13,8 +13,8 @@ ok: [app]
 PLAY [Priprema svih mašina] ****************************************************
 
 TASK [čekaj da SSH postane dostupan] *******************************************
-ok: [dns]
 ok: [app]
+ok: [dns]
 
 TASK [čekaj da cloud-init završi] **********************************************
 ok: [app]
