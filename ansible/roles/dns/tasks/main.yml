@@ -1,0 +1,47 @@
+- name: BIND i alati su instalirani
+  ansible.builtin.apt:
+    name:
+      - bind9
+      - bind9-utils
+      - bind9-dnsutils
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Opcije servera (samo autoritativni, bez rekurzije)
+  ansible.builtin.template:
+    src: named.conf.options.j2
+    dest: /etc/bind/named.conf.options
+    owner: root
+    group: bind
+    mode: "0644"
+    validate: /usr/bin/named-checkconf %s
+  notify: restart named
+
+- name: Zona i TSIG ključ (fajl sadrži tajnu pa je 0640)
+  ansible.builtin.template:
+    src: named.conf.local.j2
+    dest: /etc/bind/named.conf.local
+    owner: root
+    group: bind
+    mode: "0640"
+    validate: /usr/bin/named-checkconf %s
+  no_log: true
+  notify: restart named
+
+- name: Početni zonski fajl (pravi se samo ako ne postoji, poslije ga vodi BIND)
+  ansible.builtin.template:
+    src: zona.j2
+    dest: "/var/lib/bind/db.{{ dns_zona }}"
+    owner: bind
+    group: bind
+    mode: "0644"
+    force: false
+    validate: "/usr/bin/named-checkzone {{ dns_zona }} %s"
+  notify: restart named
+
+- name: BIND radi i pokreće se pri paljenju VM-a
+  ansible.builtin.service:
+    name: named
+    state: started
+    enabled: true

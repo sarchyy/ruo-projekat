@@ -17,3 +17,12 @@ if [ ! -f group_vars/all/vault.yml ]; then
   ansible-vault encrypt group_vars/all/vault.yml
   echo "napravljen group_vars/all/vault.yml"
 fi
+
+# TSIG ključ: "propusnica" kojom Terraform dokazuje BIND-u da smije mijenjati zonu
+mkdir -p group_vars/dns_servers
+if [ ! -f group_vars/dns_servers/vault.yml ]; then
+  TSIG=$(openssl rand -base64 32)
+  echo "vault_tsig_secret: \"$TSIG\"" > group_vars/dns_servers/vault.yml
+  ansible-vault encrypt group_vars/dns_servers/vault.yml
+  echo "napravljen TSIG ključ"
+fi

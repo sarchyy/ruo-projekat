@@ -1,0 +1,9 @@
+$TTL 300
+@   IN SOA ns1.{{ dns_zona }}. admin.{{ dns_zona }}. (
+        1       ; serial (dalje ga povećava BIND sam)
+        3600    ; refresh
+        600     ; retry
+        86400   ; expire
+        300 )   ; negative TTL
+    IN NS ns1.{{ dns_zona }}.
+ns1 IN A {{ ansible_host }}

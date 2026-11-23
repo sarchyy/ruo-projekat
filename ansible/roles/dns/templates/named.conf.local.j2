@@ -1,0 +1,13 @@
+// Upravljano preko Ansible-a (rola dns) - ne mijenjati ručno
+key "{{ dns_tsig_ime }}" {
+    algorithm hmac-sha256;
+    secret "{{ tsig_secret }}";
+};
+
+zone "{{ dns_zona }}" {
+    type primary;
+    file "/var/lib/bind/db.{{ dns_zona }}";
+    update-policy {
+        grant {{ dns_tsig_ime }} zonesub ANY;
+    };
+};
