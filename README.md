@@ -61,7 +61,7 @@ Provjera: `make check`.
 ## Pokretanje od nule
 
 ```bash
-git clone <adresa-repozitorija> ruo-projekat
+git clone https://github.com/sarchyy/ruo-projekat.git ruo-projekat
 cd ruo-projekat
 make all        # check, infra, config, dns, test (oko 12 minuta pri prvoj gradnji)
 ```
