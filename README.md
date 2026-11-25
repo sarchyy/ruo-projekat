@@ -1,12 +1,5 @@
 # Troslojna aplikacija kao kod
 
-Individualni projekat iz predmeta *Računarstvo u oblaku* (Univerzitet u Zenici).
-Autor: Sara Šljivo.
-
-Cijelo okruženje (dvije virtuelne mašine, troslojna aplikacija u kontejnerima, DNS server sa zapisima
-upravljanim iz koda) gradi se jednom komandom, a svaka izmjena je u kodu. Ništa se ne podešava ručno,
-a nijedna tajna ni IP adresa nisu upisane u repozitorij.
-
 ## Šta je u projektu
 
 Aplikacija je brojač posjeta: pregledač traži stranicu od Nginxa, stranica poziva API, API upisuje posjetu
